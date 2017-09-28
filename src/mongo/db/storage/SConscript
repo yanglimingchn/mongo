@@ -7,6 +7,7 @@ env.SConscript(
         'kv',
         'mmap_v1',
         'wiredtiger',
+	'inmemory',
     ],
 )
 

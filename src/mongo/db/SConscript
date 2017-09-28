@@ -702,6 +702,7 @@ serveronlyLibdeps = [
 
 if wiredtiger:
     serveronlyLibdeps.append('storage/wiredtiger/storage_wiredtiger')
+    serveronlyLibdeps.append('storage/inmemory/storage_inmemory')
     serveronlyLibdeps.append('$BUILD_DIR/third_party/shim_wiredtiger')
 
 serveronlyEnv.Library(
