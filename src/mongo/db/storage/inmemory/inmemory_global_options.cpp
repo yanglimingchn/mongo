@@ -44,8 +44,8 @@ Status InMemoryGlobalOptions::add(moe::OptionSection* options) {
     moe::OptionSection inMemoryOptions("InMemory options");
 
     // InMemory storage engine options
-    inMemoryOptions.addOptionChaining("storage.inMemory.engineConfig.cacheSizeGB",
-                                        "inMemoryCacheSizeGB",
+    inMemoryOptions.addOptionChaining("storage.inMemory.engineConfig.inMemorySizeGB",
+                                        "inMemorySizeGB",
                                         moe::Int,
                                         "maximum amount of memory to allocate for cache; "
                                         "defaults to 1/2 of physical RAM").validRange(1, 10000);
@@ -105,9 +105,9 @@ Status InMemoryGlobalOptions::add(moe::OptionSection* options) {
 Status InMemoryGlobalOptions::store(const moe::Environment& params,
                                       const std::vector<std::string>& args) {
     // InMemory storage engine options
-    if (params.count("storage.inMemory.engineConfig.cacheSizeGB")) {
+    if (params.count("storage.inMemory.engineConfig.inMemorySizeGB")) {
         inMemoryGlobalOptions.cacheSizeGB =
-            params["storage.inMemory.engineConfig.cacheSizeGB"].as<int>();
+            params["storage.inMemory.engineConfig.inMemorySizeGB"].as<int>();
     }
     if (params.count("storage.syncPeriodSecs")) {
         inMemoryGlobalOptions.checkpointDelaySecs =

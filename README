@@ -1,82 +1,46 @@
-Fork from origin mongodb, I want to add some features.
-first, in memory storage engine support
+Fork from origin mongodb, I want to add some features which not official open source, or not official support.
 
-MongoDB README
+First, In-Memory Storage Engine
 
-Welcome to MongoDB!
+       official In-Memory storage engine manual
+       https://docs.mongodb.com/manual/core/inmemory/#storage-inmemory
 
-COMPONENTS
+       below is the configure file example:
 
-  mongod - The database process.
-  mongos - Sharding controller.
-  mongo  - The database shell (uses interactive javascript).
+       processManagement:
+	 fork: false
+	 pidFilePath: ./mongod.pid
+	
+	net:
+	 port: 27017
+	 maxIncomingConnections: 200
+	 unixDomainSocket:
+	  pathPrefix: ./
+	
+	systemLog:
+	 destination: file
+	 logRotate: reopen
+	 path: ./mongod.log
+	 logAppend: true
+	 verbosity: 5
+	
+	replication:
+	 replSetName: mgset-name
+	
+	storage:
+	 dbPath: ./data
+	 engine: inMemory
+	 inMemory:
+	  engineConfig:
+	   inMemorySizeGB: 1
+	 mmapv1:
+	  preallocDataFiles: true
+	  nsSize: 16
+	 wiredTiger:
+	  engineConfig:
+	   cacheSizeGB: 10
+	
+	security:
+	 authorization: disabled
+	 keyFile: ./keyfile
 
-UTILITIES
-
-  mongodump         - MongoDB dump tool - for backups, snapshots, etc.
-  mongorestore      - MongoDB restore a dump
-  mongoexport       - Export a single collection to test (JSON, CSV)
-  mongoimport       - Import from JSON or CSV
-  mongofiles        - Utility for putting and getting files from MongoDB GridFS
-  mongostat         - Show performance statistics
-
-BUILDING
-
-  See docs/building.md, also www.mongodb.org search for "Building".
-
-RUNNING
-
-  For command line options invoke:
-
-    $ ./mongod --help
-
-  To run a single server database:
-
-    $ mkdir /data/db
-    $ ./mongod
-    $
-    $ # The mongo javascript shell connects to localhost and test database by default:
-    $ ./mongo 
-    > help
-
-DRIVERS
-
-  Client drivers for most programming languages are available at
-  mongodb.org.  Use the shell ("mongo") for administrative tasks.
-
-PACKAGING
-
-  Packages are created dynamically by the package.py script located in the
-  buildscripts directory. This will generate RPM and Debian packages.
-
-DOCUMENTATION
-
-  http://www.mongodb.org/
- 
-CLOUD MANAGED MONGODB
-
-  http://cloud.mongodb.com/
-
-MAIL LISTS AND IRC
-
-  http://dochub.mongodb.org/core/community
-  
-LEARN MONGODB
-
-  http://university.mongodb.com/
-
-32 BIT BUILD NOTES
-
-  MongoDB uses memory mapped files.  If built as a 32 bit executable, you will
-  not be able to work with large (multi-gigabyte) databases.  However, 32 bit
-  builds work fine with small development databases.
-
-LICENSE
-
-  Most MongoDB source files (src/mongo folder and below) are made available
-  under the terms of the GNU Affero General Public License (AGPL).  See
-  individual files for details.
-
-  As an exception, the files in the client/, debian/, rpm/,
-  utils/mongoutils, and all subdirectories thereof are made available under
-  the terms of the Apache License, version 2.0.
