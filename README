@@ -1,3 +1,6 @@
+Fork from origin mongodb, I want to add some features.
+first, in memory storage engine support
+
 MongoDB README
 
 Welcome to MongoDB!
