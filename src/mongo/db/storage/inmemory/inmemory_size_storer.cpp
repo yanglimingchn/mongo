@@ -59,7 +59,7 @@ InMemorySizeStorer::InMemorySizeStorer(WT_CONNECTION* conn, const std::string& s
     int ret = session->open_cursor(session, storageUri.c_str(), NULL, "overwrite=true", &_cursor);
     if (ret == ENOENT) {
         // Need to create table.
-        std::string config =
+        std::string config = "ignore_in_memory_cache_size=true," +
             InMemoryCustomizationHooks::get(getGlobalServiceContext())->getOpenConfig(storageUri);
         invariantWTOK(session->create(session, storageUri.c_str(), config.c_str()));
         ret = session->open_cursor(session, storageUri.c_str(), NULL, "overwrite=true", &_cursor);
