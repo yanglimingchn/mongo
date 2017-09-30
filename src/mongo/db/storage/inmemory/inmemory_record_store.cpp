@@ -1397,6 +1397,9 @@ StatusWith<RecordId> InMemoryRecordStore::updateRecord(OperationContext* txn,
     InMemoryItem value(data, len);
     c->set_value(c, value.Get());
     ret = WT_OP_CHECK(c->insert(c));
+    if (MONGO_unlikely(ret == WT_CACHE_FULL)) {
+        return StatusWith<RecordId>(wtRCToStatus(ret, "InMemoryRecordStore::updateRecord"));
+    }
     invariantWTOK(ret);
 
     _increaseDataSize(txn, len - old_length);
