@@ -544,7 +544,11 @@ public:
 
         _cursor->set_value(_cursor, valueItem.Get());
 
-        invariantWTOK(_cursor->insert(_cursor));
+        auto ret = _cursor->insert(_cursor);
+        if (MONGO_unlikely(ret == WT_CACHE_FULL)) {
+            return wtRCToStatus(ret, "InMemoryIndex::StandardBulkBuilder::addKey");
+        }
+        invariantWTOK(ret);
 
         return Status::OK();
     }
@@ -585,7 +589,9 @@ public:
             if (!_key.isEmpty()) {   // _key.isEmpty() is only true on the first call to addKey().
                 invariant(cmp > 0);  // newKey must be > the last key
                 // We are done with dups of the last key so we can insert it now.
-                doInsert();
+                auto status = doInsert();
+                if (!status.isOK())
+                    return status;
             }
             invariant(_records.empty());
         } else {
@@ -616,7 +622,7 @@ public:
     }
 
 private:
-    void doInsert() {
+    Status doInsert() {
         invariant(!_records.empty());
 
         KeyString value;
@@ -635,9 +641,14 @@ private:
         _cursor->set_key(_cursor, keyItem.Get());
         _cursor->set_value(_cursor, valueItem.Get());
 
-        invariantWTOK(_cursor->insert(_cursor));
+        auto ret = _cursor->insert(_cursor);
+        if (MONGO_unlikely(ret == WT_CACHE_FULL)) {
+            return wtRCToStatus(ret, "InMemoryIndex::UniqueBulkBuilder::doInsert");
+        }
+        invariantWTOK(ret);
 
         _records.clear();
+        return Status::OK();
     }
 
     InMemoryIndex* _idx;
